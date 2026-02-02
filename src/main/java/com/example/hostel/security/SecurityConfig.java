@@ -14,7 +14,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 
 import com.example.hostel.SecurityFilter.JwtRequestFilter;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -25,9 +24,19 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, JwtRequestFilter jwtFilter) throws Exception {
 		http
+				// 🔥 ENABLE CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+				
 				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+						.requestMatchers("/api/auth/login", 
+						"/api/auth/register",
+						// 🔥🔥 SWAGGER URLS
+						"/swagger-ui.html",
+						"/swagger-ui/**",
+						"/v3/api-docs",
+						"/v3/api-docs/**")
+						.permitAll()
 						.anyRequest().authenticated())
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
