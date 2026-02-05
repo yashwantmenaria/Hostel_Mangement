@@ -8,6 +8,6 @@ public interface PaymentService {
 
 	Payment save(Payment payment);
 
-	List<Payment> getByStudent(Long id);
+	// List<Payment> getByStudent(Long id);
 
 }

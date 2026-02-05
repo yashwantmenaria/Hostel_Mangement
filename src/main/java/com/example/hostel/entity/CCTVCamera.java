@@ -8,6 +8,7 @@ public class CCTVCamera extends BaseEntity {
 	private String username;
 	private String password;
     private Long floorNumber;
+	private Long floorId;
 
 	public String getCameraName() {
 		return cameraName;

@@ -3,13 +3,22 @@ package com.example.hostel.response;
 import java.time.LocalDate;
 
 public class MessMenuResponse {
+	private Long id;
     private String day;
     private String breakfast;
     private String lunch;
     private String dinner;
     private LocalDate menuDate;
     private String evningSnacks;
+	
 
+
+	public Long getId(){
+		return id;
+	}
+	public void setId(Long id){
+		this.id = id;
+	}
 	public String getDay() {
 		return day;
 	}

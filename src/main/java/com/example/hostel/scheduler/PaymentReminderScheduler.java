@@ -5,13 +5,13 @@ import java.time.LocalDate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.example.hostel.utils.EmailService;
+// import com.example.hostel.utils.EmailService;
 
 @Component
 public class PaymentReminderScheduler {
 
   //  private StudentRepository studentRepository;
-    private EmailService emailService;
+    // private EmailService emailService;
 
     @Scheduled(cron = "0 0 9 * * ?")  // Every day at 8 AM
     public void sendMonthlyRemindersBasedOnJoiningDate() {

@@ -20,4 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	List<User> findAllByRoomNoAndIsActiveTrueAndIsDeletedFalse(Long roomNo);
 
+	Optional<User> findByResetToken(String resetToken);
+
 }

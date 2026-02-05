@@ -21,10 +21,10 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentRepository.save(payment);
 	}
 
-	@Override
-	public List<Payment> getByStudent(Long studentId) {
-		// TODO Auto-generated method stub
-        return paymentRepository.findByStudentId(studentId);
-	}
+	// @Override
+	// public List<Payment> getByStudent(Long studentId) {
+	// 	// TODO Auto-generated method stub
+    //     return paymentRepository.findByStudentId(studentId);
+	// }
 
 }

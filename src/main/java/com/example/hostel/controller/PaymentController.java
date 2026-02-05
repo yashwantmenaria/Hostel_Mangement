@@ -26,8 +26,8 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.save(payment));
     }
 
-    @GetMapping("/student/{id}")
-    public ResponseEntity<List<Payment>> getByStudent(@PathVariable Long id) {
-        return ResponseEntity.ok(paymentService.getByStudent(id));
-    }
+    // @GetMapping("/student/{id}")
+    // public ResponseEntity<List<Payment>> getByStudent(@PathVariable Long id) {
+    //     return ResponseEntity.ok(paymentService.getByStudent(id));
+    // }
 }

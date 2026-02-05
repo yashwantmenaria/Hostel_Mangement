@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import com.example.hostel.UserDetailsRequest;
 import com.example.hostel.entity.User;
 import com.example.hostel.request.LoginRequest;
+import com.example.hostel.request.ResetPasswordRequest;
 import com.example.hostel.response.LoginResponse;
 
 public interface UserService {
@@ -20,5 +21,9 @@ public interface UserService {
 	List<User> getUsersWithDueToday();
 
 	List<User> getAll(Pageable pageable);
+
+	public void sendResetLink(String email);
+
+	public void resetPassword(ResetPasswordRequest request);
 
 }

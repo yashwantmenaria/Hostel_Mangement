@@ -8,5 +8,5 @@ import com.example.hostel.entity.Payment;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
-	List<Payment> findByStudentId(Long studentId);
+	
 }

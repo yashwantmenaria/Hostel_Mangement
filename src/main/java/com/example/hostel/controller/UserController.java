@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.hostel.UserDetailsRequest;
 import com.example.hostel.entity.User;
+import com.example.hostel.request.EmailRequest;
 import com.example.hostel.request.LoginRequest;
+import com.example.hostel.request.ResetPasswordRequest;
 import com.example.hostel.response.LoginResponse;
 import com.example.hostel.service.UserService;
 
@@ -27,14 +29,14 @@ public class UserController {
     public ResponseEntity<User> register(@RequestBody UserDetailsRequest user) {
         return ResponseEntity.ok(userService.register(user));
     }
-    
+
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest  loginRequest) {
-    	 LoginResponse response = userService.login(loginRequest);
-         return ResponseEntity.ok(response);
-     
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+        LoginResponse response = userService.login(loginRequest);
+        return ResponseEntity.ok(response);
+
     }
-    
+
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getUserByEmail(@RequestParam String email) {
         User user = userService.findByEmail(email);
@@ -43,5 +45,22 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with email: " + email);
         }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        userService.resetPassword(request);
+        return ResponseEntity.ok("Password reset successfully");
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody EmailRequest request) {
+        userService.sendResetLink(request.getEmail());
+        return ResponseEntity.ok("If email exists, reset link sent");
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        return ResponseEntity.ok("Logged out successfully");
     }
 }

@@ -1,8 +1,10 @@
 package com.example.hostel.serviceImpl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,14 +14,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.hostel.UserDetailsRequest;
 import com.example.hostel.entity.User;
 import com.example.hostel.repository.UserRepository;
 import com.example.hostel.request.LoginRequest;
+import com.example.hostel.request.ResetPasswordRequest;
 import com.example.hostel.response.LoginResponse;
 import com.example.hostel.security.JwtUtil;
+import com.example.hostel.service.EmailService;
 import com.example.hostel.service.UserService;
 
 @Service
@@ -35,6 +40,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private JwtUtil jwtUtil;
+
+	@Autowired
+	private EmailService emailService;
 
 	@Override
 	public User register(UserDetailsRequest request) {
@@ -55,6 +63,7 @@ public class UserServiceImpl implements UserService {
 				user.setPassword(passwordEncoder.encode(request.getPassword()));
 				user.setIsActive(true);
 				user.setIsDeleted(false);
+				user.setRole(request.getRole());
 			}
 			return userRepo.save(user);
 
@@ -110,7 +119,8 @@ public class UserServiceImpl implements UserService {
 
 		String token = jwtUtil.generateToken(user.getEmail());
 
-		return new LoginResponse(token, user.getRole(), user.getFirstName() + " " + user.getLastName());
+		return new LoginResponse(token, user.getRole(), user.getFirstName() + " " + user.getLastName(),
+				user.getFirstName());
 	}
 
 	@Override
@@ -137,6 +147,50 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> getAll(Pageable pageable) {
-	    return userRepo.findByIsActiveTrueAndIsDeletedFalse(pageable);
+		return userRepo.findByIsActiveTrueAndIsDeletedFalse(pageable);
+	}
+
+	@Override
+	public void sendResetLink(String email) {
+
+		User user = this.findByEmail(email);
+
+		if (!ObjectUtils.isEmpty(user)) {
+
+			String token = UUID.randomUUID().toString();
+
+			user.setResetToken(token);
+			user.setTokenExpiry(LocalDateTime.now().plusMinutes(15));
+
+			userRepo.save(user);
+
+			String resetLink = "http://localhost:8080/reset-password.html?token=" + token;
+
+			this.emailService.sendResetPasswordEmail(user.getEmail(), resetLink);
+
+		}
+	}
+
+	@Override
+	public void resetPassword(ResetPasswordRequest request) {
+
+		User user = userRepo.findByResetToken(request.getToken())
+				.orElseThrow(() -> new RuntimeException("Invalid token"));
+
+		if (user.getTokenExpiry().isBefore(LocalDateTime.now())) {
+			throw new RuntimeException("Token expired");
+		}
+
+		user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+		user.setResetToken(null);
+		user.setTokenExpiry(null);
+
+		userRepo.save(user);
+	}
+
+	public class InvalidCredentialsException extends RuntimeException {
+		public InvalidCredentialsException(String message) {
+			super(message);
+		}
 	}
 }

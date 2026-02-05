@@ -4,13 +4,15 @@ public class LoginResponse {
     private String token;
     private String role;
     private String email;
+	private String firstName;
 
    
 
-	public LoginResponse(String token, String role, String email) {
+	public LoginResponse(String token, String role, String email,  String firstName) {
         this.token = token;
         this.role = role;
         this.email = email;
+		this.firstName = firstName;
     }
 
 
@@ -47,5 +49,13 @@ public class LoginResponse {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public void setFirstName(String firstName){
+		this.firstName = firstName;
+	}
+
+	public String getFirstName(){
+		return firstName;
 	}
 }
